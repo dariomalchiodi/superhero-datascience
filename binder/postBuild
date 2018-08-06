@@ -4,6 +4,6 @@ set -ex
 cd util/theme-superhero-datascience
 npm install
 npm run build
-jupyter labextension link ,
+jupyter labextension link .
 
 jupyter lab clean
