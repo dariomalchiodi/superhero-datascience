@@ -6,4 +6,4 @@ npm install
 npm run build
 jupyter labextension install .
 
-jupyter lab clean
+jupyter lab clean && jupyter lab build
