@@ -24,6 +24,8 @@ Material Design when selecting colors. We are not, however, following
 all of MD as it is not optimized for dense, information rich UIs.
 */
 
+@import url('https://fonts.googleapis.com/css?family=Alegreya:400,400i,900');
+
 :root {
   /* Elevation
    *
