@@ -1,0 +1,10 @@
+set -ex
+
+invoke build --env-name=root --no-kernel
+
+cd 
+npm install
+npm run build
+jupyter labextension link ,
+
+jupyter lab clean
