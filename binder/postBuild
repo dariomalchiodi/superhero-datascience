@@ -1,8 +1,7 @@
 set -ex
 
-invoke build --env-name=root --no-kernel
 
-cd 
+cd util/theme-superhero-datascience
 npm install
 npm run build
 jupyter labextension link ,
