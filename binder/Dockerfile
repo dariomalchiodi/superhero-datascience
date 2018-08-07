@@ -6,7 +6,7 @@ USER jovyan
 
 RUN mkdir /home/jovyan/util
 
-COPY util/* /home/jovyan/util
+COPY util/ /home/jovyan/util/
 
 RUN cd util/theme-superhero-datascience && npm install && npm run build \
  && jupyter labextension install
