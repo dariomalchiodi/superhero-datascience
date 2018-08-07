@@ -1,3 +1,3 @@
-FROM jupyter/all-spark-notebook:033056e6d164
+FROM jupyter/all-spark-notebook:177037d09156
 
 RUN pip install --no-cache-dir vdom==0.5
