@@ -4,7 +4,7 @@ RUN pip install --no-cache-dir vdom==0.5
 
 USER jovyan
 
-RUN mkdir /home/jovyan/util
+RUN mkdir /home/jovyan/util && chmod -r +rwx /home/jovyan/util
 
 COPY util/ /home/jovyan/util/
 
