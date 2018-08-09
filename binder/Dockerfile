@@ -166,7 +166,7 @@ WORKDIR /home/$NON_PRIVILEGED_USER
 
 
 RUN mkdir -p /home/$NON_PRIVILEGED_USER/util/theme-superhero-datascience
-COPY /theme-superhero-datascience/ /home/$NON_PRIVILEGED_USER/util/theme-superhero-datascience
+COPY theme-superhero-datascience/ /home/$NON_PRIVILEGED_USER/util/theme-superhero-datascience
 
 USER root
 
