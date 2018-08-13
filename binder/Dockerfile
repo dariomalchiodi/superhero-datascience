@@ -1,210 +1,57 @@
-FROM debian@sha256:52af198afd8c264f1035206ca66a5c48e602afb32dc912ebf9e9478134601ec4
+FROM jupyter/scipy-notebook
 
-############
-# ENV VARS #
-############
-ENV DEBIAN_FRONTEND noninteractive
-ENV SHELL /bin/bash
-ENV NON_PRIVILEGED_USER="jovyan"
-ENV NON_PRIVILEGED_USER_PASSWORD="571039481093852"
-ENV NON_PRIVILEGED_USER_GROUP="app"
-ENV CONDA_DIR /home/$NON_PRIVILEGED_USER/anaconda
-ENV NVM_DIR /usr/local/nvm
-ENV NVM_INSTALLER_FILE "install-nvm.sh"
-ENV NODE_VERSION v8.0.0
-ENV JUPYTER_LAB_VERSION 0.28.0
 
-#################
-# ADDING A USER #
-#################
-# For more info please check useradd --help or man useradd.
-RUN groupadd -r $NON_PRIVILEGED_USER_GROUP -g 1000 \
- && useradd \
-    --uid 1000 \
-    --system \
-    --gid $NON_PRIVILEGED_USER_GROUP \
-    --create-home \
-    --home-dir /home/$NON_PRIVILEGED_USER/ \
-    --shell /bin/bash \
-    --comment "non-privileged user" \
-    $NON_PRIVILEGED_USER \
- && chmod 755 /home/$NON_PRIVILEGED_USER/ \
- && echo "$NON_PRIVILEGED_USER:$NON_PRIVILEGED_USER_PASSWORD" | chpasswd
+#############
+# ADD FONTS #
+#############
 
-###################
-# SYSTEM PACKAGES #
-###################
-RUN REPO=http://cdn-fastly.deb.debian.org \
- && echo "deb $REPO/debian jessie main\ndeb $REPO/debian-security jessie/updates main" > /etc/apt/sources.list \
- && apt-get update && apt-get --yes --quiet dist-upgrade \
- && apt-get install --yes --quiet --no-install-recommends \
-    wget \
-    curl \
-    bzip2 \
-    ca-certificates \
-    sudo \
-    locales \
-    git \
-    build-essential \
-    python-dev \
-    unzip \
-    libsm6 \
-    pandoc \
-    texlive-latex-base \
-    texlive-latex-extra \
-    texlive-fonts-extra \
-    texlive-fonts-recommended \
-    texlive-generic-recommended \
-    libxrender1 \
-    inkscape \
-    graphviz \
- && apt-get clean \
- && rm -rf /var/lib/apt/lists/*
+USER root
 
-##############
-# SET LOCALE #
-##############
-RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
-    echo 'LANG="en_US.UTF-8"'>/etc/default/locale && \
-    dpkg-reconfigure --frontend=noninteractive locales && \
-    update-locale LANG=en_US.UTF-8
+RUN apt-get install nano
 
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US:en
-ENV LC_ALL en_US.UTF-8
-
-########
-# TINI #
-########
-# (protect against zombie processes)
-RUN wget --quiet https://github.com/krallin/tini/releases/download/v0.14.0/tini \
- && echo "eeffbe853a15982e85d923390d3a0c4c5bcf9c78635f4ddae207792fa4d7b5e6 *tini" | sha256sum -c - \
- && mv tini /usr/local/bin/tini \
- && chmod +x /usr/local/bin/tini
-
-########################
-# SETUP HOME DIRECTORY #
-########################
-USER $NON_PRIVILEGED_USER
-
-# Setup jovyan home directory
-RUN mkdir /home/$NON_PRIVILEGED_USER/work && \
-    mkdir /home/$NON_PRIVILEGED_USER/.jupyter && \
-    echo "cacert=/etc/ssl/certs/ca-certificates.crt" > /home/$NON_PRIVILEGED_USER/.curlrc  # do we really need this? (for wget?)
-ENV HOME /home/$NON_PRIVILEGED_USER
-
-#################
-# INSTALL CONDA #
-#################
-# install anaconda as NON_PRIVILEGED_USER
-USER $NON_PRIVILEGED_USER
-WORKDIR /home/$NON_PRIVILEGED_USER
-ENV PATH $CONDA_DIR/bin:$PATH
-RUN mkdir --parents $CONDA_DIR \
- && wget --quiet https://repo.continuum.io/miniconda/Miniconda3-4.3.11-Linux-x86_64.sh \
- && echo "b9fe70ce7b6fa8df05abfb56995959b897d0365299f5046063bc236843474fb8 Miniconda3-4.3.11-Linux-x86_64.sh" | sha256sum -c - \
- && /bin/bash Miniconda3-4.3.11-Linux-x86_64.sh -f -b -p $CONDA_DIR \
- && rm Miniconda3-4.3.11-Linux-x86_64.sh \
- && $CONDA_DIR/bin/conda config --system --add channels conda-forge \
- && $CONDA_DIR/bin/conda config --system --set auto_update_conda false \
- && conda clean -tips --yes
+RUN wget https://github.com/ryanoasis/nerd-fonts/releases/download/v2.0.0/FiraCode.zip
+RUN unzip FiraCode.zip -d /usr/local/share/fonts/
+RUN fc-cache -fv
+RUN rm FiraCode.zip
 
 ##################
 # CONDA PACKAGES #
 ##################
 RUN conda update conda && conda install -c conda-forge --yes \
- jupyter\
- jupyterlab
+ 'nodejs<10' \
+ pip \
+ ipyvolume
 
-RUN conda clean -tips --yes
+RUN pip install --upgrade paretochart
 
-RUN yes | pip install --upgrade pip
+USER $NB_UID
 
-###############
-# INSTALL NPM #
-###############
-
-USER root
-RUN adduser $NON_PRIVILEGED_USER sudo
-
-RUN rm /bin/sh && ln -s /bin/bash /bin/sh
-
-# update the repository sources list
-# and install dependencies
-RUN apt-get update \
-    && apt-get install -y curl \
-    && apt-get -y autoclean
-
-# nvm environment variables
-ENV NVM_DIR /usr/local/nvm
-ENV NODE_VERSION 8.10.0
-
-# install nvm
-# https://github.com/creationix/nvm#install-script
-RUN curl --silent -o- https://raw.githubusercontent.com/creationix/nvm/v0.31.2/install.sh | bash
-
-# install node and npm
-RUN source $NVM_DIR/nvm.sh \
-    && nvm install $NODE_VERSION \
-    && nvm alias default $NODE_VERSION \
-    && nvm use default
-
-# add node and npm to path so the commands are available
-ENV NODE_PATH $NVM_DIR/v$NODE_VERSION/lib/node_modules
-ENV PATH $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
-
-RUN touch /home/$NON_PRIVILEGED_USER/.config
-RUN chown $NON_PRIVILEGED_USER /home/$NON_PRIVILEGED_USER/.config
-
-# confirm installation
-RUN node -v
-RUN npm -v
-
-USER $NON_PRIVILEGED_USER
-
-WORKDIR /home/$NON_PRIVILEGED_USER
-
-
-RUN mkdir -p /home/$NON_PRIVILEGED_USER/util/theme-superhero-datascience
-COPY theme-superhero-datascience/ /home/$NON_PRIVILEGED_USER/util/theme-superhero-datascience
-
-USER root
-
-WORKDIR /home/$NON_PRIVILEGED_USER
-
-RUN chown $NON_PRIVILEGED_USER -R .config && chgrp -R app .config
-
-USER $NON_PRIILEGED_USER
-
-RUN conda create -n superhero-datascience && \
-    source activate superhero-datascience && \
-    conda install -c conda-forge 'nodejs<10' notebook
+RUN mkdir -p util/theme-superhero-datascience
+COPY theme-superhero-datascience/* util/theme-superhero-datascience/
 
 RUN git clone https://github.com/jupyterlab/jupyterlab.git
 
-WORKDIR /home/$NON_PRIVILEGED_USER/jupyterlab
+WORKDIR /home/jovyan/jupyterlab
 
-RUN pip install -e . && jlpm install 
+RUN pip install -e . && \
+    jlpm install && \
+    cp ../util/theme-superhero-datascience/create-theme.js buildutils/lib && \
+    jlpm run create:theme
 
-RUN cp ../util/theme-superhero-datascience/create-theme.js buildutils/lib && \
-    node buildutils/lib/create-theme.js
+WORKDIR /home/jovyan
 
+#USER root
+#RUN chown -R jovyan jupyterlab/theme-superhero-datascience
 
-#RUN jlpm run create:theme < ../util/theme-superhero-datascience/jlpm-input.txt
-#
-WORKDIR /home/$NON_PRIVILEGED_USER
-RUN cp util/theme-superhero-datascience/variables.css jupyterlab/theme-superhero-datascience/style/variables.css
-RUN cp util/theme-superhero-datascience/tsconfig.json jupyterlab/theme-superhero-datascience/tsconfig.json
+USER jovyan
 
-USER root
-RUN chown -R $NON_PRIVILEGED_USER jupyterlab/theme-superhero-datascience
+WORKDIR /home/jovyan/jupyterlab/theme-superhero-datascience
 
-USER $NON_PRIVILEGED_USER
-
-RUN cd /home/$NON_PRIVILEGED_USER/jupyterlab/theme-superhero-datascience && \
-     npm install && \
-     npm run build && \
-     jupyter labextension install .
+RUN cp ../../util/theme-superhero-datascience/tsconfig.json . && \
+    cp ../../util/theme-superhero-datascience/variables.css style/ && \
+    npm install && \
+    npm run build && \
+    jupyter labextension install .
 
 EXPOSE 8888
 ENTRYPOINT ["jupyter", "lab", "--ip=0.0.0.0"]
