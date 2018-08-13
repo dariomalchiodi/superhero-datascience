@@ -103,13 +103,6 @@ venv.bak/
 # mypy
 .mypy_cache/
 
-
-
-MANIFEST
-/util/theme-superhero-datascience/lib
-/util/theme-superhero-datascience/static
-
-/util/theme-superhero-datascience/node_modules
 .cache
 .vscode
 *.py[co]
