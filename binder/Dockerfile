@@ -1,58 +1,74 @@
 FROM jupyter/scipy-notebook
 
-
-#############
-# ADD FONTS #
-#############
+LABEL maintainer "Dario Malchiodi <malchiodi@di.unimi.it>"
 
 USER root
 
-RUN apt-get install nano
+# libav-tools for matplotlib anim
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+                    libav-tools graphviz ttf-freefont && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-RUN wget https://github.com/ryanoasis/nerd-fonts/releases/download/v2.0.0/FiraCode.zip
+RUN wget https://github.com/ryanoasis/nerd-fonts/releases/download/v1.0.0/FiraCode.zip
 RUN unzip FiraCode.zip -d /usr/local/share/fonts/
 RUN fc-cache -fv
 RUN rm FiraCode.zip
 
-##################
-# CONDA PACKAGES #
-##################
-RUN conda update conda && conda install -c conda-forge --yes \
- 'nodejs<10' \
- pip \
- ipyvolume
 
-RUN pip install --upgrade paretochart
+# Install Python 2 packages
+RUN conda create --quiet --yes -p $CONDA_DIR/envs/python2 python=2.7 \
+    'ipython' \
+    'notebook' \
+    'ipywidgets' \
+    'pandas' \
+    'cython' \
+    'matplotlib' \
+    'scipy' \
+    'seaborn' \
+    'bokeh' \
+    'pyzmq' \
+    'mysql-connector-python' \
+    'ipyvolume' \
+    'scikit-learn' \
+    'python-graphviz' \
+    && conda clean -tipsy
 
-USER $NB_UID
+RUN conda install -c conda-forge jupyter_nbextensions_configurator
+RUN conda install -c conda-forge jupyter_contrib_nbextensions
 
-RUN mkdir -p util/theme-superhero-datascience
-COPY theme-superhero-datascience/* util/theme-superhero-datascience/
+RUN jupyter nbextension enable hide_input/main
 
-RUN git clone https://github.com/jupyterlab/jupyterlab.git
+RUN $CONDA_DIR/envs/python2/bin/python -m ipykernel install
 
-WORKDIR /home/jovyan/jupyterlab
+RUN $CONDA_DIR/envs/python2/bin/pip install --upgrade paretochart
 
-RUN pip install -e . && \
-    jlpm install && \
-    cp ../util/theme-superhero-datascience/create-theme.js buildutils/lib && \
-    jlpm run create:theme
+RUN pip install ipyvolume && \
+    jupyter nbextension enable --py --system ipyvolume
 
-WORKDIR /home/jovyan
-
-#USER root
-#RUN chown -R jovyan jupyterlab/theme-superhero-datascience
 
 USER jovyan
 
-WORKDIR /home/jovyan/jupyterlab/theme-superhero-datascience
+RUN rmdir /home/jovyan/work
 
-RUN cp ../../util/theme-superhero-datascience/tsconfig.json . && \
-    cp ../../util/theme-superhero-datascience/variables.css style/ && \
-    npm install && \
-    npm run build && \
-    jupyter labextension install .
+RUN mkdir -p /home/jovyan/my-work
 
-EXPOSE 8888
-ENTRYPOINT ["jupyter", "lab", "--ip=0.0.0.0"]
+RUN mkdir -p /home/jovyan/data
 
+RUN mkdir -p /home/jovyan/img
+
+COPY content/L*ipynb /home/jovyan/
+
+COPY content/data/* /home/jovyan/data/
+
+COPY content/img/* /home/jovyan/img/
+
+USER root
+
+RUN mkdir -p /home/jovyan/.jupyter/custom
+
+ADD custom.css /home/jovyan/.jupyter/custom/
+
+
+USER jovyan
