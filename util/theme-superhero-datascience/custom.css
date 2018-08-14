@@ -1,0 +1,283 @@
+
+@import url('https://fonts.googleapis.com/css?family=Alegreya:400,400i,700,900');
+@import url(https://cdn.rawgit.com/tonsky/FiraCode/1.205/distr/fira_code.css);
+
+html {
+  font-size: 20px;
+}
+
+body {
+  counter-reset: sidenote-counter;
+}
+
+#ipython_notebook img{
+  display:block;
+  background: url(ds-logo.png) no-repeat;
+  background-size: contain;
+  width: 43px;
+  height: 33px;
+  padding-left: 43px;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+#notebook-container.container {
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  margin-left: 0;
+  margin-right: 0;
+  width: 100%;
+}
+
+div.header {
+  font-size: 0.8rem;
+}
+
+div.footer {
+  font-size: 0.8rem;
+}
+
+div.cell.text_cell {
+  font-family: 'Alegreya', serif; /* Make non-code text serif. */
+}
+
+div.cell.selected {
+  border-color: white;
+}
+
+div.cell.code_cell.selected {
+  border-color: white;
+}
+
+.CodeMirror {
+  font-family: 'Fira code', monospace;
+}
+
+.bs-callout {
+  width: 100%;
+  padding: 5%;
+  margin: 5% 0;
+  border: 1px solid #eee;
+  border-left-width: 5px;
+  border-radius: 3px;
+}
+
+.bs-callout h4 {
+  margin-top: 0;
+  margin-bottom: 5px;
+}
+
+.bs-callout p:last-child {
+  margin-bottom: 0;
+}
+
+.bs-callout code {
+  border-radius: 3px;
+}
+
+.bs-callout+.bs-callout {
+  margin-top: -5px;
+}
+
+.bs-callout-default {
+  border-left-color: #777;
+}
+
+.bs-callout-default h4 {
+  color: #777;
+}
+
+.bs-callout-primary {
+  border-left-color: #428bca;
+}
+
+.bs-callout-primary h4 {
+  color: #428bca;
+}
+
+.sidenote-number {
+  counter-increment: sidenote-counter;
+}
+
+.sidenote-number:after, .sidenote:before {
+  content: counter(sidenote-counter) " ";
+  position: relative;
+  vertical-align: baseline;
+}
+
+.sidenote-number:after {
+  content: counter(sidenote-counter);
+  font-size: 1rem;
+  top: -0.5rem;
+  left: 0.1rem;
+}
+
+.sidenote:before {
+  content: counter(sidenote-counter) " ";
+  top: -0.5rem;
+}
+
+blockquote .sidenote, blockquote .marginnote {
+  margin-right: -82%;
+  min-width: 59%;
+  text-align: left;
+}
+
+.marginnote > code, .sidenote > code {
+  font-size: 1rem;
+}
+
+input.margin-toggle {
+  display: none;
+}
+
+label.sidenote-number {
+  display: inline;
+}
+
+label.margin-toggle:not(.sidenote-number) {
+  display: inline;
+}
+
+.sidenote, .marginnote {
+  display: none;
+}
+
+.margin-toggle:checked + .sidenote,
+.margin-toggle:checked + .marginnote {
+  display: block;
+  float: left;
+  left: 1rem;
+  clear: both;
+  width: 95%;
+  margin: 1rem 2.5%;
+  vertical-align: baseline;
+  position: relative;
+  font-size: 0.8rem;
+  padding-left: 1ex;
+  text-indent:-1ex;
+}
+
+label {
+  cursor: pointer;
+}
+
+div.text_cell_render {
+  font-size: 1rem;
+  line-height: 145%; /* added for some line spacing of text. */
+}
+
+div.text_cell_render h1 {
+  font-size: 2.5rem;
+  font-weight: 600;
+  margin-top: 4rem;
+  margin-bottom: 5rem;
+  line-height: 1
+}
+
+div.text_cell_render h2 {
+  font-weight: 600;
+  margin-top: 1.1rem;
+  margin-bottom: 0;
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+div.text_cell_render h3 {
+  font-weight: 400;
+  font-size: 1.5rem;
+  margin-top: 2rem;
+  margin-bottom: 0;
+  line-height: 1;
+}
+
+span.newthought {
+  font-variant: small-caps;
+  font-size: 1.2rem;
+}
+
+/* Desktop & tablet */
+@media only (min-width: 760px) {
+
+  html {
+    font-size: 20px !important;
+  }
+
+  body {
+    max-width: 1400px;
+  }
+
+  div.input {
+    width: 105ex; /* about 80 chars + buffer */
+  }
+
+  div.text_cell_render p {
+    width: 74ex; /* instead of 100%, */
+    margin-left: -0.5ex;
+  }
+
+  table.table {
+    margin-top: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  table.table caption, figure caption {
+    text-align: center;
+    font-family: 'Alegreya', serif;
+    font-size: 0.8rem;
+    font-weight: bold;
+  }
+
+  table.table td, table.table th {
+    font-family: 'Alegreya', serif;
+    font-size: 0.8rem;
+  }
+
+  div.text_cell .alert {
+    width: 74ex;
+  }
+
+  div.text_cell li {
+    width: 74ex;
+  }
+
+  div.text_cell .alert li {
+    width: 62ex;
+  }
+
+}
+
+/* Smartphones */
+@media (max-width: 760px) {
+
+  html {
+    font-size: 20px;
+  }
+
+  div.text_cell {
+    width: 98%;
+  }
+
+/*  div#notebook{
+    width: 100%;
+    overflow: scroll;
+  }
+
+  */
+  div.inner_cell {
+    width: 100%;
+  }
+
+  div.text_cell_render {
+    line-height: 145%; /* added for some line spacing of text. */
+  }
+
+  div.input {
+    width: 100%;
+    font-size: 0.8rem;
+  }
+ 
+  div.output_subarea {
+    max-width: 100%;
+  }
+}

@@ -19,18 +19,10 @@ RUN rm FiraCode.zip
 
 # Install Python 2 packages
 RUN conda install -c conda-forge \
-    'notebook' \
-    'jupyter' \
     'ipywidgets' \
-    'pandas' \
-    'cython' \
-    'matplotlib' \
-    'scipy' \
-    'seaborn' \
     'bokeh' \
     'pyzmq' \
     'ipyvolume' \
-    'scikit-learn' \
     'python-graphviz' \
     && conda clean -tipsy
 
@@ -67,7 +59,7 @@ USER root
 
 RUN mkdir -p /home/jovyan/.jupyter/custom
 
-ADD custom.css /home/jovyan/.jupyter/custom/
+ADD util/theme-superhero-datascience/custom.css /home/jovyan/.jupyter/custom/
 
 
 USER jovyan
