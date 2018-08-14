@@ -27,7 +27,7 @@ RUN pip install --upgrade paretochart
 USER $NB_UID
 
 RUN mkdir -p util/theme-superhero-datascience
-COPY theme-superhero-datascience/* util/theme-superhero-datascience/
+COPY util/theme-superhero-datascience/* util/theme-superhero-datascience/
 
 RUN git clone https://github.com/jupyterlab/jupyterlab.git
 

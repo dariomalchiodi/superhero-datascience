@@ -7,20 +7,20 @@ USER root
 # libav-tools for matplotlib anim
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-                    libav-tools graphviz ttf-freefont && \
+                    graphviz && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-RUN wget https://github.com/ryanoasis/nerd-fonts/releases/download/v1.0.0/FiraCode.zip
+RUN wget https://github.com/ryanoasis/nerd-fonts/releases/download/v2.0.0/FiraCode.zip
 RUN unzip FiraCode.zip -d /usr/local/share/fonts/
 RUN fc-cache -fv
 RUN rm FiraCode.zip
 
 
 # Install Python 2 packages
-RUN conda create --quiet --yes -p $CONDA_DIR/envs/python2 python=2.7 \
-    'ipython' \
+RUN conda install -c conda-forge \
     'notebook' \
+    'jupyter' \
     'ipywidgets' \
     'pandas' \
     'cython' \
@@ -29,7 +29,6 @@ RUN conda create --quiet --yes -p $CONDA_DIR/envs/python2 python=2.7 \
     'seaborn' \
     'bokeh' \
     'pyzmq' \
-    'mysql-connector-python' \
     'ipyvolume' \
     'scikit-learn' \
     'python-graphviz' \
@@ -40,9 +39,9 @@ RUN conda install -c conda-forge jupyter_contrib_nbextensions
 
 RUN jupyter nbextension enable hide_input/main
 
-RUN $CONDA_DIR/envs/python2/bin/python -m ipykernel install
+RUN python -m ipykernel install
 
-RUN $CONDA_DIR/envs/python2/bin/pip install --upgrade paretochart
+RUN pip install --upgrade paretochart
 
 RUN pip install ipyvolume && \
     jupyter nbextension enable --py --system ipyvolume
@@ -50,7 +49,7 @@ RUN pip install ipyvolume && \
 
 USER jovyan
 
-RUN rmdir /home/jovyan/work
+#RUN rmdir /home/jovyan/work
 
 RUN mkdir -p /home/jovyan/my-work
 
