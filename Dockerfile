@@ -35,8 +35,6 @@ RUN python -m ipykernel install
 
 RUN pip install --upgrade paretochart
 
-RUN pip install ipyvolume && \
-    jupyter nbextension enable --py --system ipyvolume
 
 
 USER jovyan
@@ -57,9 +55,16 @@ COPY content/img/* /home/jovyan/img/
 
 USER root
 
+RUN chown jovyan /home/jovyan/L*ipynb
+RUN chgrp users /home/jovyan/L*ipynb
+
 RUN mkdir -p /home/jovyan/.jupyter/custom
 
 ADD util/theme-superhero-datascience/custom.css /home/jovyan/.jupyter/custom/
+
+RUN cd $CONDA_DIR/lib/python3.6/site-packages/paretochart && \
+    2to3 -w *.py
+
 
 
 USER jovyan

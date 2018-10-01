@@ -34,6 +34,8 @@ all of MD as it is not optimized for dense, information rich UIs.
    */
 
 @import url('https://fonts.googleapis.com/css?family=Alegreya:400,500i,900');
+@import url(https://cdn.rawgit.com/tonsky/FiraCode/1.205/distr/fira_code.css);
+
 
   --jp-shadow-base-lightness: 0;
   --jp-shadow-umbra-color: rgba(
@@ -186,7 +188,7 @@ all of MD as it is not optimized for dense, information rich UIs.
   --jp-code-font-size: 13px;
   --jp-code-line-height: 1.3077; /* 17px for 13px base */
   --jp-code-padding: 0.385em; /* 5px for 13px base */
-  --jp-code-font-family: 'Source Code Pro', monospace;
+  --jp-code-font-family: 'Fira Code', 'Source Code Pro', monospace;
 
   /* This gives a magnification of about 125% in presentation mode over normal. */
   --jp-code-presentation-font-size: 16px;
