@@ -4,7 +4,7 @@
 
 
 
-![Superhero logo](content/img/superhero-icon.png)
+![Superhero logo](content/img/ds-logo.png)
 
 # Superhero data science
 
