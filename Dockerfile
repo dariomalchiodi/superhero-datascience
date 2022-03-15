@@ -1,4 +1,4 @@
-FROM jupyter/scipy-notebook
+FROM jupyter/scipy-notebook:hub-2.2.1
 
 LABEL maintainer "Dario Malchiodi <malchiodi@di.unimi.it>"
 
@@ -62,7 +62,7 @@ RUN mkdir -p /home/jovyan/.jupyter/custom
 
 ADD util/theme-superhero-datascience/custom.css /home/jovyan/.jupyter/custom/
 
-RUN cd $CONDA_DIR/lib/python3.6/site-packages/paretochart && \
+RUN cd $CONDA_DIR/lib/python3.9/site-packages/paretochart && \
     2to3 -w *.py
 
 
