@@ -1,4 +1,4 @@
-FROM jupyter/scipy-notebook
+FROM jupyter/scipy-notebook:hub-2.2.1
 
 LABEL maintainer "Dario Malchiodi <malchiodi@di.unimi.it>"
 
