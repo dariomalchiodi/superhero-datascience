@@ -33,9 +33,9 @@ RUN jupyter nbextension enable hide_input/main
 
 RUN python -m ipykernel install
 
-RUN pip install --upgrade paretochart
-
-
+# Install additional requirements (if not already installed)
+COPY requirements.txt .
+RUN pip install -r requirements.txt
 
 USER jovyan
 
@@ -61,10 +61,5 @@ RUN chgrp users /home/jovyan/L*ipynb
 RUN mkdir -p /home/jovyan/.jupyter/custom
 
 ADD util/theme-superhero-datascience/custom.css /home/jovyan/.jupyter/custom/
-
-RUN cd $CONDA_DIR/lib/python3.9/site-packages/paretochart && \
-    2to3 -w *.py
-
-
 
 USER jovyan
