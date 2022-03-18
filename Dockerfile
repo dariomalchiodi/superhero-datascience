@@ -36,6 +36,7 @@ RUN python -m ipykernel install
 # Install additional requirements (if not already installed)
 COPY requirements.txt .
 RUN pip install -r requirements.txt
+RUN rm requirements.txt
 
 USER jovyan
 
