@@ -1,0 +1,11 @@
+jupyter
+numpy
+pandas
+matplotlib
+graphviz
+scipy
+sklearn
+rogeriopradoj-paretochart
+statsmodels
+ipywidgets
+

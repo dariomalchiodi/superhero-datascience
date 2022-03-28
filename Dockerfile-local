@@ -10,9 +10,10 @@ RUN conda update conda && conda install -c conda-forge --yes \
  ipyvolume
 
 USER root
-RUN pip install --upgrade paretochart && \
-    cd $CONDA_DIR/lib/python3.6/site-packages/paretochart && \
-    2to3 -w *.py
+# Install additional requirements (if not already installed)
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+RUN rm requirements.txt
 
 USER $NB_UID
 
