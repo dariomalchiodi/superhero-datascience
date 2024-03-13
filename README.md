@@ -25,8 +25,8 @@ su Docker oppure clonando un repository github.
 
 ## Versione statica
 Nella loro versione statica le dispense sono consultabili tramite un browser
-Web (in versione recente) collegandosi all'indirizzo
-https://dariomalchiodi.gitlab.io/sad-python-book.
+Web (in versione recente) accedendo alla directory `content` di questo
+repository e selezionando i vari notebook (i file con estensione .ipynb).
 
 ## Versione interattiva basata su Docker
 Il contenuto delle dispense è scritto utilizzando dei notebook jupyter, e
